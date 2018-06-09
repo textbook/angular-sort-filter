@@ -5,7 +5,11 @@ export class AppPage {
     return browser.get('/');
   }
 
-  getParagraphText() {
-    return element(by.css('asf-root h1')).getText();
+  getNames() {
+    return element.all(by.css('li.person .name')).map(el => el.getText());
+  }
+
+  getHeader() {
+    return element(by.css('h1')).getText();
   }
 }
