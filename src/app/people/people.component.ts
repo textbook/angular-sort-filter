@@ -18,7 +18,7 @@ export class PeopleComponent implements OnInit {
 
   private sortable = true;
 
-  data$: Observable<Person[]> = this.dataSubject.asObservable();
+  data$: Observable<Person[]>;
 
   constructor(private service: PersonService) {
     this.data$ = combineLatest(
