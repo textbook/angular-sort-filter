@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
+import { combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Person, PersonService } from '../person.service';
@@ -14,7 +14,9 @@ import { createFieldSorter, noOpSorter, Sorter } from './sorting';
 export class PeopleComponent implements OnInit {
 
   private dataSubject = new ReplaySubject<Person[]>(1);
-  private sortSubject = new BehaviorSubject<Sorter<Person>>(noOpSorter);
+  private sortSubject = new ReplaySubject<Sorter<Person>>(1);
+
+  private sortable = true;
 
   data$: Observable<Person[]> = this.dataSubject.asObservable();
 
@@ -32,10 +34,19 @@ export class PeopleComponent implements OnInit {
   }
 
   refreshPeople() {
-    this.service.getData().subscribe(people => this.dataSubject.next(people));
+    this.service.getData().subscribe(people => {
+      this.resetSort();
+      this.dataSubject.next(people);
+    });
   }
 
   sortPeople() {
+    this.sortable = false;
     this.sortSubject.next(createFieldSorter('name'));
+  }
+
+  private resetSort() {
+    this.sortable = true;
+    this.sortSubject.next(noOpSorter);
   }
 }

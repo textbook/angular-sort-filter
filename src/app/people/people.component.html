@@ -7,5 +7,5 @@
 
   <button (click)="refreshPeople()">Refresh</button>
 
-  <button (click)="sortPeople()">Sort</button>
+  <button (click)="sortPeople()" [disabled]="!sortable">Sort</button>
 </div>

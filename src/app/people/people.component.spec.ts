@@ -37,20 +37,43 @@ describe('PeopleComponent', () => {
     expect(getNames()).toEqual(['Charlie', 'Angela', 'Barry']);
   });
 
-  it('should allow the user to fetch a new list', () => {
-    service.getData.calls.reset();
+  describe('Refresh button', () => {
+    it('should allow the user to fetch a new list', () => {
+      service.getData.calls.reset();
 
-    getButton('Refresh').click();
-    fixture.detectChanges();
+      getButton('Refresh').click();
+      fixture.detectChanges();
 
-    expect(service.getData).toHaveBeenCalled();
+      expect(service.getData).toHaveBeenCalled();
+    });
+
+    it('should reset the sorting', () => {
+      service.getData.and.returnValue(of([{ name: 'Ellie' }, { name: 'Dana' }]));
+
+      getButton('Sort').click();
+      fixture.detectChanges();
+
+      getButton('Refresh').click();
+      fixture.detectChanges();
+
+      expect(getNames()).toEqual(['Ellie', 'Dana']);
+    });
   });
 
-  it('should allow the user to sort by name', () => {
-    getButton('Sort').click();
-    fixture.detectChanges();
+  describe('Sort button', () => {
+    it('should allow the user to sort by name', () => {
+      getButton('Sort').click();
+      fixture.detectChanges();
 
-    expect(getNames()).toEqual(['Angela', 'Barry', 'Charlie']);
+      expect(getNames()).toEqual(['Angela', 'Barry', 'Charlie']);
+    });
+
+    it('should disable itself', () => {
+      getButton('Sort').click();
+      fixture.detectChanges();
+
+      expect(getButton('Sort').hasAttribute('disabled')).toBe(true);
+    });
   });
 
   function getButton(text: string): HTMLButtonElement {
