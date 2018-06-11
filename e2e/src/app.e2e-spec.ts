@@ -12,8 +12,8 @@ describe('angular-sort-filter application', () => {
     expect(page.getHeader()).toEqual('Angular Sorting and Filtering');
   });
 
-  it('should display people', () => {
+  it('should display five people', () => {
     page.navigateTo();
-    expect(page.getNames()).toEqual(['Charlie', 'Angela', 'Barry']);
+    expect(page.getNames().then(result => result.length)).toEqual(5);
   });
 });

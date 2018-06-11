@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+
+import { Observable, ReplaySubject } from 'rxjs';
+
 import { Person, PersonService } from '../person.service';
 
 @Component({
@@ -7,11 +9,15 @@ import { Person, PersonService } from '../person.service';
   templateUrl: './people.component.html',
   styleUrls: ['./people.component.css']
 })
-export class PeopleComponent {
+export class PeopleComponent implements OnInit {
 
-  data$: Observable<Person[]>;
+  private dataSubject = new ReplaySubject<Person[]>(1);
 
-  constructor(private service: PersonService) {
-    this.data$ = service.getData();
+  data$: Observable<Person[]> = this.dataSubject.asObservable();
+
+  constructor(private service: PersonService) {}
+
+  ngOnInit() {
+    this.service.getData().subscribe(people => this.dataSubject.next(people));
   }
 }

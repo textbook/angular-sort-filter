@@ -1,8 +1,19 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface Person {
   name: string;
+}
+
+export interface RawPerson {
+  name: {
+    title: string;
+    first: string;
+    last: string;
+  };
 }
 
 @Injectable({
@@ -10,15 +21,15 @@ export interface Person {
 })
 export class PersonService {
 
-  private people: Person[] = [
-    { name: 'Charlie' },
-    { name: 'Angela' },
-    { name: 'Barry' },
-  ];
+  private static url = 'https://randomuser.me/api/';
 
-  constructor() { }
+  constructor(private client: HttpClient) { }
 
   getData(): Observable<Person[]> {
-    return of(this.people);
+    return this.client
+        .get<{ results: RawPerson[] }>(PersonService.url, { params: { results: '5' } })
+        .pipe(
+            map(({ results }) => results.map(({ name }) => ({ name: `${name.first} ${name.last}`})))
+        );
   }
 }
