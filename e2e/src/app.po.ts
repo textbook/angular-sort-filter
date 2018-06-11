@@ -12,4 +12,8 @@ export class AppPage {
   getHeader() {
     return element(by.css('h1')).getText();
   }
+
+  refreshPeople() {
+    return element(by.buttonText('Refresh')).click();
+  }
 }

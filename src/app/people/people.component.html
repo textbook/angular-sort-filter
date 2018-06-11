@@ -1,5 +1,9 @@
-<ul>
-  <li *ngFor="let person of data$ | async" class="person">
-    <span class="name">{{ person.name }}</span>
-  </li>
-</ul>
+<div>
+  <ul>
+    <li *ngFor="let person of data$ | async" class="person">
+      <span class="name">{{ person.name }}</span>
+    </li>
+  </ul>
+
+  <button (click)="refreshPeople()">Refresh</button>
+</div>

@@ -16,4 +16,13 @@ describe('angular-sort-filter application', () => {
     page.navigateTo();
     expect(page.getNames().then(result => result.length)).toEqual(5);
   });
+
+  it('should allow user to fetch different people', () => {
+    page.navigateTo();
+    const initialNames = page.getNames();
+
+    page.refreshPeople();
+
+    expect(page.getNames()).not.toEqual(initialNames);
+  });
 });

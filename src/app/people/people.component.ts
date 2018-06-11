@@ -18,6 +18,10 @@ export class PeopleComponent implements OnInit {
   constructor(private service: PersonService) {}
 
   ngOnInit() {
+    this.refreshPeople();
+  }
+
+  refreshPeople() {
     this.service.getData().subscribe(people => this.dataSubject.next(people));
   }
 }

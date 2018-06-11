@@ -37,4 +37,15 @@ describe('PeopleComponent', () => {
     const elements: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll('li'));
     expect(elements.map(el => el.textContent)).toEqual(['Charlie', 'Angela', 'Barry']);
   });
+
+  it('should allow the user to fetch a new list', () => {
+    service.getData.calls.reset();
+
+    const button = fixture.nativeElement.querySelector('button');
+    expect(button.textContent).toEqual('Refresh');
+    button.click();
+    fixture.detectChanges();
+
+    expect(service.getData).toHaveBeenCalled();
+  });
 });
