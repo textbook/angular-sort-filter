@@ -16,4 +16,8 @@ export class AppPage {
   refreshPeople() {
     return element(by.buttonText('Refresh')).click();
   }
+
+  sortPeople() {
+    return element(by.buttonText('Sort')).click();
+  }
 }

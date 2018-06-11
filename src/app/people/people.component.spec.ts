@@ -34,18 +34,34 @@ describe('PeopleComponent', () => {
   });
 
   it('should show the list of people', () => {
-    const elements: HTMLElement[] = Array.from(fixture.nativeElement.querySelectorAll('li'));
-    expect(elements.map(el => el.textContent)).toEqual(['Charlie', 'Angela', 'Barry']);
+    expect(getNames()).toEqual(['Charlie', 'Angela', 'Barry']);
   });
 
   it('should allow the user to fetch a new list', () => {
     service.getData.calls.reset();
 
-    const button = fixture.nativeElement.querySelector('button');
-    expect(button.textContent).toEqual('Refresh');
-    button.click();
+    getButton('Refresh').click();
     fixture.detectChanges();
 
     expect(service.getData).toHaveBeenCalled();
   });
+
+  it('should allow the user to sort by name', () => {
+    getButton('Sort').click();
+    fixture.detectChanges();
+
+    expect(getNames()).toEqual(['Angela', 'Barry', 'Charlie']);
+  });
+
+  function getButton(text: string): HTMLButtonElement {
+    return Array
+        .from(fixture.nativeElement.querySelectorAll('button') as HTMLButtonElement[])
+        .filter(el => el.textContent.trim() === text)[0];
+  }
+
+  function getNames() {
+    return Array
+        .from(fixture.nativeElement.querySelectorAll('li'))
+        .map((el: HTMLElement) => el.textContent.trim());
+  }
 });
