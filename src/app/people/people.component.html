@@ -11,6 +11,6 @@
 
   <button *ngFor="let nationality of nationalities"
           (click)="filterPeople(nationality)"
-          [disabled]="filteredBy$(nationality) | async"
+          [disabled]="(selectedNationality$ | async) === nationality"
   >Filter {{nationality}}</button>
 </div>

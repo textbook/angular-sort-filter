@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
+import { combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Nationality, Person, PersonService } from '../person.service';
@@ -15,7 +15,7 @@ import { createFieldFilterer, Filterer, noOpFilterer } from './filtering';
 export class PeopleComponent implements OnInit {
 
   private dataSubject = new ReplaySubject<Person[]>(1);
-  private nationalitySubject = new BehaviorSubject<Nationality | null>(null);
+  private nationalitySubject = new ReplaySubject<Nationality | null>(1);
   private sortSubject = new ReplaySubject<Sorter<Person>>(1);
 
   private filterer$: Observable<Filterer<Person>> = this.nationalitySubject
@@ -25,6 +25,7 @@ export class PeopleComponent implements OnInit {
   sortable = true;
 
   data$: Observable<Person[]>;
+  selectedNationality$ = this.nationalitySubject.asObservable();
 
   constructor(private service: PersonService) {
     this.data$ = combineLatest(this.dataSubject, this.filterer$, this.sortSubject)
@@ -33,10 +34,6 @@ export class PeopleComponent implements OnInit {
 
   ngOnInit() {
     this.refreshPeople();
-  }
-
-  filteredBy$(nationality: Nationality): Observable<boolean> {
-    return this.nationalitySubject.pipe(map(nat => nat === nationality));
   }
 
   filterPeople(nationality: Nationality) {
