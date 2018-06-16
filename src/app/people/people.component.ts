@@ -18,9 +18,8 @@ export class PeopleComponent implements OnInit {
   private nationalitySubject = new BehaviorSubject<Nationality | null>(null);
   private sortSubject = new ReplaySubject<Sorter<Person>>(1);
 
-  private filterer$: Observable<Filterer<Person>> = this.nationalitySubject.pipe(
-      map(nat => nat ? createFieldFilterer('nationality', nat) : noOpFilterer)
-  );
+  private filterer$: Observable<Filterer<Person>> = this.nationalitySubject
+      .pipe(map(nat => nat ? createFieldFilterer('nationality', nat) : noOpFilterer));
   private sortable = true;
 
   nationalities: Nationality[] = ['French', 'German'];
@@ -28,13 +27,8 @@ export class PeopleComponent implements OnInit {
   data$: Observable<Person[]>;
 
   constructor(private service: PersonService) {
-    this.data$ = combineLatest(
-        this.dataSubject.asObservable(),
-        this.filterer$,
-        this.sortSubject.asObservable(),
-    ).pipe(
-        map(([data, filterer, sorter]) => data.filter(filterer).sort(sorter))
-    );
+    this.data$ = combineLatest(this.dataSubject, this.filterer$, this.sortSubject)
+        .pipe(map(([data, filterer, sorter]) => data.filter(filterer).sort(sorter)));
   }
 
   ngOnInit() {
