@@ -1,0 +1,36 @@
+dist: trusty
+
+addons:
+  chrome: stable
+
+language: node_js
+
+node_js:
+  - "8"
+
+install:
+  - npm install -g @angular/cli
+  - npm install -g karma
+  - npm install
+
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+  - ng -v
+
+script:
+  - ng lint
+  - ng test --no-watch
+  - ng e2e
+
+before_deploy:
+  - npm run build
+
+deploy:
+  provider: cloudfoundry
+  api: https://api.run.pcfbeta.io
+  username: $CF_USERNAME
+  password: $CF_PASSWORD
+  organization: pivot-jsharpe
+  space: development
