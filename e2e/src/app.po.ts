@@ -5,6 +5,10 @@ export class AppPage {
     return browser.get('/');
   }
 
+  personCount() {
+    return element.all(by.css('li.person')).count();
+  }
+
   getNames() {
     return element.all(by.css('li.person .name')).map(el => el.getText());
   }
@@ -19,5 +23,9 @@ export class AppPage {
 
   sortPeople() {
     return element(by.buttonText('Sort')).click();
+  }
+
+  filterPeopleByNationality(nationality: string) {
+    return element(by.buttonText(`Filter ${nationality}`)).click();
   }
 }

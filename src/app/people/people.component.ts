@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
-import { combineLatest, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Person, PersonService } from '../person.service';
+import { Nationality, Person, PersonService } from '../person.service';
 import { createFieldSorter, noOpSorter, Sorter } from './sorting';
+import { createFieldFilterer, Filterer, noOpFilterer } from './filtering';
 
 @Component({
   selector: 'asf-people',
@@ -14,23 +15,38 @@ import { createFieldSorter, noOpSorter, Sorter } from './sorting';
 export class PeopleComponent implements OnInit {
 
   private dataSubject = new ReplaySubject<Person[]>(1);
+  private nationalitySubject = new BehaviorSubject<Nationality | null>(null);
   private sortSubject = new ReplaySubject<Sorter<Person>>(1);
 
+  private filterer$: Observable<Filterer<Person>> = this.nationalitySubject.pipe(
+      map(nat => nat ? createFieldFilterer('nationality', nat) : noOpFilterer)
+  );
   private sortable = true;
+
+  nationalities: Nationality[] = ['French', 'German'];
 
   data$: Observable<Person[]>;
 
   constructor(private service: PersonService) {
     this.data$ = combineLatest(
         this.dataSubject.asObservable(),
+        this.filterer$,
         this.sortSubject.asObservable(),
     ).pipe(
-        map(([data, sorter]) => data.sort(sorter))
+        map(([data, filterer, sorter]) => data.filter(filterer).sort(sorter))
     );
   }
 
   ngOnInit() {
     this.refreshPeople();
+  }
+
+  filteredBy$(nationality: Nationality): Observable<boolean> {
+    return this.nationalitySubject.pipe(map(nat => nat === nationality));
+  }
+
+  filterPeople(nationality: Nationality) {
+    this.nationalitySubject.next(nationality);
   }
 
   refreshPeople() {

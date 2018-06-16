@@ -8,4 +8,9 @@
   <button (click)="refreshPeople()">Refresh</button>
 
   <button (click)="sortPeople()" [disabled]="!sortable">Sort</button>
+
+  <button *ngFor="let nationality of nationalities"
+          (click)="filterPeople(nationality)"
+          [disabled]="filteredBy$(nationality) | async"
+  >Filter {{nationality}}</button>
 </div>

@@ -4,8 +4,11 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+export type Nationality = 'German' | 'French';
+
 export interface Person {
   name: string;
+  nationality: Nationality;
 }
 
 export interface RawPerson {
@@ -14,6 +17,7 @@ export interface RawPerson {
     first: string;
     last: string;
   };
+  nat: 'de' | 'fr';
 }
 
 @Injectable({
@@ -27,9 +31,20 @@ export class PersonService {
 
   getData(): Observable<Person[]> {
     return this.client
-        .get<{ results: RawPerson[] }>(PersonService.url, { params: { results: '5' } })
+        .get<{ results: RawPerson[] }>(PersonService.url, { params: { results: '5', nationality: 'de,fr' } })
         .pipe(
-            map(({ results }) => results.map(({ name }) => ({ name: `${name.first} ${name.last}`})))
+            map(({ results }) => results.map(({ name, nat }) => {
+              let nationality;
+              switch (nat.toLowerCase()) {
+                case 'fr':
+                  nationality = 'French';
+                  break;
+                case 'de':
+                  nationality = 'German';
+                  break;
+              }
+              return ({ name: `${name.first} ${name.last}`, nationality });
+            }))
         );
   }
 }

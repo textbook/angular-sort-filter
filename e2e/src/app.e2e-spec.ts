@@ -31,4 +31,16 @@ describe('angular-sort-filter application', () => {
 
     expect(page.getNames()).toEqual(initialNames.then(names => names.sort()));
   });
+
+  it('should allow user to filter by nationality', () => {
+    const initialCount = page.personCount();
+
+    page.filterPeopleByNationality('French');
+    const french = page.personCount();
+
+    page.filterPeopleByNationality('German');
+    const germans = page.personCount();
+
+    expect(french.then(fr => germans.then(de => de + fr))).toEqual(initialCount);
+  });
 });

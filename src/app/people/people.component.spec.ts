@@ -5,20 +5,22 @@ import createSpyObj = jasmine.createSpyObj;
 import { of } from 'rxjs';
 
 import { PeopleComponent } from './people.component';
-import { PersonService } from '../person.service';
+import { Person, PersonService } from '../person.service';
 
 describe('PeopleComponent', () => {
   let component: PeopleComponent;
   let fixture: ComponentFixture<PeopleComponent>;
   let service: SpyObj<PersonService>;
 
+  const people: Person[] = [
+      { name: 'Charlie', nationality: 'French' },
+      { name: 'Angela', nationality: 'German' },
+      { name: 'Barry', nationality: 'German' },
+  ];
+
   beforeEach(async(() => {
     service = createSpyObj('PersonService', ['getData']);
-    service.getData.and.returnValue(of([
-      { name: 'Charlie' },
-      { name: 'Angela' },
-      { name: 'Barry' },
-    ]));
+    service.getData.and.returnValue(of(people));
 
     TestBed.configureTestingModule({
       declarations: [PeopleComponent],
@@ -73,6 +75,25 @@ describe('PeopleComponent', () => {
       fixture.detectChanges();
 
       expect(getButton('Sort').hasAttribute('disabled')).toBe(true);
+    });
+  });
+
+  describe('Filter buttons', () => {
+    it('should allow the user to filter by nationality', () => {
+      const frenchButton = getButton('Filter French');
+      const germanButton = getButton('Filter German');
+
+      frenchButton.click();
+      fixture.detectChanges();
+
+      expect(getNames()).toEqual(['Charlie']);
+      expect(frenchButton.hasAttribute('disabled')).toBe(true);
+
+      germanButton.click();
+      fixture.detectChanges();
+
+      expect(getNames()).toEqual(['Angela', 'Barry']);
+      expect(germanButton.hasAttribute('disabled')).toBe(true);
     });
   });
 

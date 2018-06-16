@@ -16,20 +16,29 @@ describe('PersonService', () => {
     controller = TestBed.get(HttpTestingController);
   });
 
-  it('should request random users', () => {
+  afterEach(() => {
+    controller.verify();
+  });
+
+  it('should request random French and German users', () => {
     service.getData().subscribe();
 
-    controller.expectOne('https://randomuser.me/api/?results=5');
+    controller.expectOne(req => {
+      return req.url === 'https://randomuser.me/api/'
+          && req.params.getAll('results').includes('5')
+          && req.params.getAll('nationality').includes('de,fr');
+    });
   });
 
   it('should expose the users', (done: DoneFn) => {
     service.getData().subscribe(result => {
       expect(result[0].name).toEqual('john smith');
+      expect(result[0].nationality).toEqual('French');
       done();
     });
 
     controller
-        .expectOne('https://randomuser.me/api/?results=5')
-        .flush({ results: [{ name: { first: 'john', last: 'smith' } }] });
+        .expectOne({ method: 'GET' })
+        .flush({ results: [{ name: { first: 'john', last: 'smith' }, nat: 'FR' }] });
   });
 });
