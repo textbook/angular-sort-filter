@@ -20,12 +20,12 @@ before_script:
   - ng -v
 
 script:
-  - ng lint
-  - ng test --no-watch
-  - ng e2e
+  - npm run lint
+  - npm run test
+  - npm run e2e
 
 before_deploy:
-  - ng build --prod
+  - npm run build
 
 deploy:
   provider: cloudfoundry

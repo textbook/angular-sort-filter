@@ -6,8 +6,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
+    "build": "ng build --prod --output-path=dist",
+    "test": "ng test --no-watch",
+    "watch": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
