@@ -60,6 +60,21 @@ describe('PeopleComponent', () => {
 
       expect(getNames()).toEqual(['Ellie', 'Dana']);
     });
+
+    it('should reset the filtering', () => {
+      service.getData.and.returnValue(of([
+        { name: 'Ellie', nationality: 'French' },
+        { name: 'Dana', nationality: 'German' },
+      ]));
+
+      getButton('Filter French').click();
+      fixture.detectChanges();
+
+      getButton('Refresh').click();
+      fixture.detectChanges();
+
+      expect(getNames()).toEqual(['Ellie', 'Dana']);
+    });
   });
 
   describe('Sort button', () => {

@@ -45,6 +45,7 @@ export class PeopleComponent implements OnInit {
 
   refreshPeople() {
     this.service.getData().subscribe(people => {
+      this.resetFilter();
       this.resetSort();
       this.dataSubject.next(people);
     });
@@ -53,6 +54,10 @@ export class PeopleComponent implements OnInit {
   sortPeople() {
     this.sortable = false;
     this.sortSubject.next(createFieldSorter('name'));
+  }
+
+  private resetFilter() {
+    this.nationalitySubject.next(null);
   }
 
   private resetSort() {
