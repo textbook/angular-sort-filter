@@ -20,9 +20,9 @@ export class PeopleComponent implements OnInit {
 
   private filterer$: Observable<Filterer<Person>> = this.nationalitySubject
       .pipe(map(nat => nat ? createFieldFilterer('nationality', nat) : noOpFilterer));
-  private sortable = true;
 
   nationalities: Nationality[] = ['French', 'German'];
+  sortable = true;
 
   data$: Observable<Person[]>;
 

@@ -25,7 +25,7 @@ script:
   - ng e2e
 
 before_deploy:
-  - npm run build
+  - ng build --prod
 
 deploy:
   provider: cloudfoundry
